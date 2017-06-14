@@ -1,5 +1,5 @@
 function [train_loss, train_acc, test_loss, test_acc, train_time] ...
-    = AdaGrad(gradFunc, lossFunc, accFunc, x_train, y_train, x_test, y_test, opts)
+    = AdaGrad(x_train, y_train, x_test, y_test, opts)
 % AdaGrad solver
 if ~isfield(opts, 'lr')
     lr = 1e-2;
@@ -22,9 +22,10 @@ else
     lamb = opts.lamb;
 end
 
-[~, m] = size(x_train);
-G = zeros(m, 1);
-w = randn(m, 1);
+[~, n_features] = size(x_train);
+[~, n_labels] = size(y_train);
+G = zeros(n_features, n_labels);
+w = randn(n_features, n_labels);
 train_loss = zeros(max_iter, 1);
 train_acc = zeros(max_iter, 1);
 test_loss = zeros(max_iter, 1);
@@ -33,14 +34,22 @@ train_time = zeros(max_iter, 1);
 for i = 1:max_iter
     tic;
     fprintf('iter: %d/%d\n', i, max_iter);
-    g = gradFunc(y_train, w, x_train, lamb);
+    g = Softgrad(y_train, w, x_train, lamb);
     G = G + g.^2;
     w = w - lr .* g ./ sqrt(G + eps);
     train_time(i) = toc;
-    train_loss(i) = lossFunc(y_train, w, x_train, lamb);
-    train_acc(i) = accFunc(y_train, w, x_train);
-    test_loss(i) = lossFunc(y_test, w, x_test, 0); % test loss doesn't include regulation
-    test_acc(i) = accFunc(y_test, w, x_test);
+    % train eval
+    [proba, loss] = Softloss(y_train, w, x_train, lamb);
+    pred = floor(bsxfun(@rdivide, proba, max(proba, [], 2)));
+    acc = sum(sum(pred==y_train, 2))/numel(y_train);
+    train_loss(i) = loss;
+    train_acc(i) = acc;
+    % test eval
+    [proba, loss] = Softloss(y_test, w, x_test, lamb);
+    pred = floor(bsxfun(@rdivide, proba, max(proba, [], 2)));
+    acc = sum(sum(pred==y_test, 2))/numel(y_test);
+    test_loss(i) = loss;
+    test_acc(i) = acc;
     fprintf('CPU time: %f, train loss: %f, train_acc: %f, test_loss: %f, test_acc: %f \n', ...
         train_time(i), train_loss(i), train_acc(i), test_loss(i), test_acc(i)); 
 end

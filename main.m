@@ -1,15 +1,13 @@
-% train
-% min 1/n*sum(f_i(w)+lamd*||w||_1 [2]
-% f_i(w) = log(1+exp(-y^i*w^T*x^i))
+% main
 
 %% parameters
-data_path = '../data/';
-result_path = '../result/';
-target = 'covtype';
+data_path = './data/';
+result_path = './result/';
+target = 'mnist';
 solver = 'RMSProp';
 opts.lr = 0.01;
-opts.max_iter = 500;
-opts.lamb = 10;
+opts.max_iter = 200;
+opts.lamb = 0.001;
 prefix = sprintf('%s_%s_lr%s_lamb%s_iter%d', ...
     target, solver, num2str(opts.lr), num2str(opts.lamb), opts.max_iter);
 
@@ -22,25 +20,19 @@ if ~exist(target, 'var')
     data = data(randperm(length(data)), :);
 end
 
-%% L2 norm
-% loss = @(y, w, x, lamb) sum(log(1+exp(-y.*(x*w))))/numel(y) + 0.5*lamb*norm(w, 2);
-% grad = @(y, w, x, lamb) -x.'*(y./(1+exp(y.*(x*w))))/numel(y) + lamb*w;
-%% L1 norm
-% grad = @(y, w, x, lamb) -x.'*(y./(1+exp(y.*(x*w))))/numel(y) + lamb*sign(w);
-loss = @(y, w, x, lamb) sum(log(1+exp(-y.*(x*w))))/numel(y) + lamb*norm(w, 1);
-grad = @(y, w, x, lamb) Grad(y, w, x, lamb);
-accuracy = @(y, w, x) sum(sign(x*w)==y)/numel(y);
-
 %% train and test 
+onehot = @(y) bsxfun(@eq, y(:), 1:max(y));
 n_train = round(0.75*length(data));
 x_train = data(1:n_train, 1:end-1);
-y_train = data(1:n_train, end);
+y_train = data(1:n_train, end)+1;
+y_train = onehot(y_train);
 x_test = data(n_train+1:end, 1:end-1);
-y_test = data(n_train+1:end, end);
+y_test = data(n_train+1:end, end)+1;
+y_test = onehot(y_test);
 
 %% train
 Solver = str2func(solver);
-[train_loss, train_acc, test_loss, test_acc, train_time] = Solver(grad, loss, accuracy, x_train, y_train, x_test, y_test, opts);
+[train_loss, train_acc, test_loss, test_acc, train_time] = Solver(x_train, y_train, x_test, y_test, opts);
 
 %% plot
 figure();
