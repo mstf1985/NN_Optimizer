@@ -3,8 +3,8 @@
 %% parameters
 data_path = './data/';
 result_path = './result/';
-target = 'covtype';
-solver = 'RMSProp';
+target = 'mnist';
+solver = 'AdaDelta';
 opts.lr = 0.01;
 opts.max_iter = 200;
 opts.lamb = 0.001;
