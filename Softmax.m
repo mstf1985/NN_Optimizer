@@ -5,8 +5,8 @@ function [pred, loss, grad] = Softmax(y, w, x, lamb)
 % - y: n_samples, n_labels
 
 n_samples = size(x, 1);
-ExM = exp(x*w);
-pred = bsxfun(@rdivide, ExM', sum(ExM'))';
+XxW = exp(x*w);
+pred = bsxfun(@rdivide, XxW, sum(XxW, 2));
 loss = -sum(sum(log(pred).*y))/n_samples + lamb/2 * sum(sum(w.^2));
 grad = -x'*(y - pred)/ n_samples + lamb*w;
 
