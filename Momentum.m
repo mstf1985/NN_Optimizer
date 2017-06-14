@@ -11,7 +11,6 @@ if ~isfield(opts, 'max_iter')
 else
     max_iter = opts.max_iter;
 end
-end
 if ~isfield(opts, 'lamb')
     lamb = 1.;
 else
