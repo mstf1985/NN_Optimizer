@@ -3,7 +3,7 @@
 %% parameters
 data_path = './data/';
 result_path = './result/';
-target = 'mnist';
+target = 'covtype';
 solver = 'RMSProp';
 opts.lr = 0.01;
 opts.max_iter = 200;
