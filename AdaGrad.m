@@ -22,6 +22,7 @@ else
     lamb = opts.lamb;
 end
 
+rng('default'); % random seed
 [~, n_features] = size(x_train);
 [~, n_labels] = size(y_train);
 G = zeros(n_features, n_labels);
