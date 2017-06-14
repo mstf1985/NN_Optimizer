@@ -1,4 +1,4 @@
-function [proba, loss] = Softloss(y, w, x, lamb)
+function [acc, loss, proba] = Softloss(y, w, x, lamb)
 % proba, loss and gradient
 % - x: n_samples, n_features
 % - w: n_features, n_labels
@@ -9,5 +9,8 @@ ExW = exp(x*w);
 proba = bsxfun(@rdivide, ExW, sum(ExW, 2));
 loss  = -sum(sum(log(proba).*y))/n_samples + lamb/2 * sum(sum(w.^2));
 % grad  = -x'*(y - proba)/ n_samples + lamb*w;
+[~, pred] = max(proba, [], 2);
+[~, label] = max(y, [], 2);
+acc = sum(pred==label)/numel(label);
 
 end

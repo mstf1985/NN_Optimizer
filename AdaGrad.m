@@ -39,15 +39,11 @@ for i = 1:max_iter
     w = w - lr .* g ./ sqrt(G + eps);
     train_time(i) = toc;
     % train eval
-    [proba, loss] = Softloss(y_train, w, x_train, lamb);
-    pred = floor(bsxfun(@rdivide, proba, max(proba, [], 2)));
-    acc = sum(sum(pred==y_train, 2))/numel(y_train);
+    [acc, loss, ~] = Softloss(y_train, w, x_train, lamb);
     train_loss(i) = loss;
     train_acc(i) = acc;
     % test eval
-    [proba, loss] = Softloss(y_test, w, x_test, lamb);
-    pred = floor(bsxfun(@rdivide, proba, max(proba, [], 2)));
-    acc = sum(sum(pred==y_test, 2))/numel(y_test);
+    [acc, loss, ~] = Softloss(y_test, w, x_test, lamb);
     test_loss(i) = loss;
     test_acc(i) = acc;
     fprintf('CPU time: %f, train loss: %f, train_acc: %f, test_loss: %f, test_acc: %f \n', ...
