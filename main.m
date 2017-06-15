@@ -4,8 +4,8 @@
 data_path = './data/';
 result_path = './result/';
 target = 'mnist';
-solver = 'Momentum';
-opts.lr = 0.1;
+solver = 'SAG';
+opts.lr = 0.01;
 opts.max_iter = 200;
 opts.lamb = 0.001;
 prefix = sprintf('%s_%s_lr%s_lamb%s_iter%d', ...
