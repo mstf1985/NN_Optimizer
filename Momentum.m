@@ -2,7 +2,7 @@ function [train_loss, train_acc, test_loss, test_acc, train_time] ...
     = Momentum(x_train, y_train, x_test, y_test, opts)
 % Momentum solver
 if ~isfield(opts, 'lr')
-    lr = 1e-3;
+    lr = 1e-1;
 else
     lr = opts.lr;
 end

@@ -5,9 +5,10 @@ data_path = './data/';
 result_path = './result/';
 target = 'mnist';
 solver = 'Momentum';
-opts.lr = 0.1;
+opts.lr = 0.01;
 opts.max_iter = 200;
 opts.lamb = 0.001;
+opts.rho = 
 prefix = sprintf('%s_%s_lr%s_lamb%s_iter%d', ...
     target, solver, num2str(opts.lr), num2str(opts.lamb), opts.max_iter);
 
