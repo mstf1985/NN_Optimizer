@@ -31,7 +31,7 @@ rng('default'); % random seed
 [n_samples, n_features] = size(x_train);
 [~, n_labels] = size(y_train);
 d = zeros(n_features, n_labels);
-y = zeros(n_samples, n_features, n_labels);
+W = zeros(n_samples, n_features, n_labels);
 w = randn(n_features, n_labels);
 train_loss = zeros(max_iter, 1);
 train_acc = zeros(max_iter, 1);
@@ -43,8 +43,8 @@ for i = 1:max_iter
     fprintf('iter: %d/%d\n', i, max_iter);
     s = randsample(1:n_samples, batch_size);
     g = Softgrad(y_train(s, :, :), w, x_train(s, :, :), lamb);
-    d = d - squeeze(mean(y(s, :, :), 1)) + g;
-    y(s, :, :) = repmat(reshape(g, [1, size(g)]), length(s), 1);
+    d = d - squeeze(mean(W(s, :, :), 1)) + g;
+    W(s, :, :) = repmat(reshape(g, [1, size(g)]), length(s), 1);
     w = w - lr .* d;
     train_time(i) = toc;
     % train eval

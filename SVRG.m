@@ -22,7 +22,7 @@ else
     lamb = opts.lamb;
 end
 if ~isfield(opts, 'freq')
-    freq = 100;
+    freq = 1000;
 else
     freq = opts.freq;
 end
@@ -30,8 +30,6 @@ end
 rng('default'); % random seed
 [n_samples, n_features] = size(x_train);
 [~, n_labels] = size(y_train);
-d = zeros(n_features, n_labels);
-W = zeros(freq, n_features, n_labels);
 w = randn(n_features, n_labels);
 train_loss = zeros(max_iter, 1);
 train_acc = zeros(max_iter, 1);
@@ -43,13 +41,15 @@ for i = 1:max_iter
     fprintf('iter: %d/%d\n', i, max_iter);
     g = Softgrad(y_train, w, x_train, lamb);
     s = randsample(1:n_samples, freq);
-    W(1, :, :) = w;
+    d = w;
+    m = w;
     for k = 1:freq-1
-        v = Softgrad(y_train(s(k), :), squeeze(W(k, : ,:)), x_train(s(k), :), lamb) - ...
+        v = Softgrad(y_train(s(k), :), d, x_train(s(k), :), lamb) - ...
             Softgrad(y_train(s(k), :), w, x_train(s(k), :), lamb) + g;
-        W(k+1, :, :) = W(k, :, :) - reshape(lr .*  v, [1, size(v)]);
+        d = d - lr .*  v;
+        m = m + d;
     end
-    w = squeeze(mean(W, 1));
+    w = m / freq;
     train_time(i) = toc;
     % train eval
     [acc, loss, ~] = Softloss(y_train, w, x_train, lamb);
