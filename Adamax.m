@@ -21,13 +21,13 @@ if ~isfield(opts, 'lamb')
 else
     lamb = opts.lamb;
 end
-%add rou1 rou2 delta
-if ~isfield(opts, 'rou1')
+%add rho1 rho2 delta
+if ~isfield(opts, 'rho1')
     rho1 = 0.9;
 else
     rho1 = opts.rho1;
 end
-if ~isfield(opts, 'rou2')
+if ~isfield(opts, 'rho2')
     rho2 = 0.999;
 else
     rho2 = opts.rho2;
@@ -71,6 +71,6 @@ for i = 1:max_iter
     test_loss(i) = loss;
     test_acc(i) = acc;
     fprintf('CPU time: %f, train loss: %f, train_acc: %f, test_loss: %f, test_acc: %f \n', ...
-        train_time(i), train_loss(i), train_acc(i), test_loss(i), test_acc(i)); 
+        train_time(i), train_loss(i), train_acc(i), test_loss(i), test_acc(i));
 end
 end
