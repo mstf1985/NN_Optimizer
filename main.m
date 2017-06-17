@@ -4,7 +4,7 @@
 data_path = './data/';
 result_path = './result/';
 target = 'mnist';
-solver = 'Adam';
+solver = 'SVRG';
 opts.lr = 0.01;
 opts.max_iter = 200;
 opts.lamb = 0.001;

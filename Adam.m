@@ -38,6 +38,7 @@ else
     delta = opts.delta;
 end
 
+rng('default'); % random seed
 [~, n_features] = size(x_train);
 [~, n_labels] = size(y_train);
 t = 0;
