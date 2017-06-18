@@ -49,7 +49,7 @@ for i = 1:max_iter
     s = randsample(1:n_batch, 1);
     batch = ((s-1)*n_batch+1):s*n_batch;
     g = Softgrad(y_train(batch, :, :), w, x_train(batch, :, :), lamb);
-    G = rho*G + (1-rho)*g.^2;
+    G = rho * G + (1-rho) * (g.^2);
     w = w - lr .* g ./ sqrt(G + eps);
     train_time(i) = toc;
     % train eval
