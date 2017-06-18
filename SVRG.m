@@ -11,24 +11,25 @@ if ~isfield(opts, 'max_iter')
 else
     max_iter = opts.max_iter;
 end
-if ~isfield(opts, 'eps')
-    eps = 1e-8;
-else
-    eps = opts.eps;
-end
 if ~isfield(opts, 'lamb')
     lamb = 1.;
 else
     lamb = opts.lamb;
 end
 if ~isfield(opts, 'freq')
-    freq = 1000;
+    freq = 100;
 else
     freq = opts.freq;
+end
+if ~isfield(opts, 'batch_size')
+    batch_size = 100;
+else
+    batch_size = opts.batch_size;
 end
 
 rng('default'); % random seed
 [n_samples, n_features] = size(x_train);
+n_batch = round(n_samples / batch_size);
 [~, n_labels] = size(y_train);
 w = randn(n_features, n_labels);
 train_loss = zeros(max_iter, 1);
@@ -39,13 +40,17 @@ train_time = zeros(max_iter, 1);
 for i = 1:max_iter
     tic;
     fprintf('iter: %d/%d\n', i, max_iter);
-    g = Softgrad(y_train, w, x_train, lamb);
-    s = randsample(1:n_samples, freq);
+    s = randsample(1:n_batch, 1);
+    batch = ((s-1)*n_batch+1):s*n_batch;
+    g = Softgrad(y_train(batch, :, :), w, x_train(batch, :, :), lamb);
     d = w;
     m = w;
     for k = 1:freq-1
-        v = Softgrad(y_train(s(k), :), d, x_train(s(k), :), lamb) - ...
-            Softgrad(y_train(s(k), :), w, x_train(s(k), :), lamb) + g;
+        s = randsample(1:n_batch, 1);
+        batch = ((s-1)*n_batch+1):s*n_batch;
+        g_d = Softgrad(y_train(batch, :, :), d, x_train(batch, :, :), lamb);
+        g_w = Softgrad(y_train(batch, :, :), w, x_train(batch, :, :), lamb);
+        v = g_d - g_w + g;
         d = d - lr .*  v;
         m = m + d;
     end

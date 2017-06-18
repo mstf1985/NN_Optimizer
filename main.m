@@ -6,10 +6,9 @@ result_path = './result/';
 target = 'mnist';
 solver = 'SVRG';
 opts.lr = 0.01;
-opts.max_iter = 200;
+opts.max_iter = 500;
+opts.batch_size = 1000;
 opts.lamb = 0.001;
-prefix = sprintf('%s_%s_lr%s_lamb%s_iter%d', ...
-    target, solver, num2str(opts.lr), num2str(opts.lamb), opts.max_iter);
 
 %% load and shuffle data
 rng('default'); % random seed
@@ -22,7 +21,7 @@ end
 
 %% train and test 
 onehot = @(y) bsxfun(@eq, y(:), 1:max(y));
-n_train = round(0.75*length(data));
+n_train = 60000;
 x_train = data(1:n_train, 1:end-1);
 y_train = data(1:n_train, end)+1;
 y_train = onehot(y_train);
@@ -40,17 +39,17 @@ plot(train_loss);
 hold on;
 plot(test_loss);
 legend('train loss', 'test loss');
-saveas(gcf, [result_path, prefix, '_loss.png']);
+saveas(gcf, [result_path, target, '_', solver, '_loss.png']);
 figure();
 plot(train_acc);
 hold on;
 plot(test_acc);
 legend('train acc', 'test acc', 'Location','SouthEast');
-saveas(gcf, [result_path, prefix, '_acc.png']);
+saveas(gcf, [result_path, target, '_', solver, '_acc.png']);
 
 %% save result
-save([result_path, prefix, '_train_loss.mat'], 'train_loss');
-save([result_path, prefix, '_train_acc.mat'], 'train_acc');
-save([result_path, prefix, '_test_loss.mat'], 'test_loss');
-save([result_path, prefix, '_test_acc.mat'], 'test_acc');
-save([result_path, prefix, '_train_time.mat'], 'train_time');
+save([result_path, target, '_', solver, '_train_loss.mat'], 'train_loss');
+save([result_path, target, '_', solver, '_train_acc.mat'], 'train_acc');
+save([result_path, target, '_', solver, '_test_loss.mat'], 'test_loss');
+save([result_path, target, '_', solver, '_test_acc.mat'], 'test_acc');
+save([result_path, target, '_', solver, '_train_time.mat'], 'train_time');
