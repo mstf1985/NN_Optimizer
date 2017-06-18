@@ -4,7 +4,7 @@
 data_path = './data/';
 result_path = './result/';
 target = 'mnist';
-solver = 'SVRG';
+solver = 'NrmsProp';
 opts.lr = 0.01;
 opts.max_iter = 500;
 opts.batch_size = 1000;
