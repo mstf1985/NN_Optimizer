@@ -42,7 +42,7 @@ for i = 1:max_iter
     tic;
     fprintf('iter: %d/%d\n', i, max_iter);
     s = randsample(1:n_batch, 1);
-    batch = ((s-1)*n_batch+1):s*n_batch;
+    batch = ((s - 1)*batch_size + 1):s*batch_size;
     g = Softgrad(y_train(batch, :, :), w, x_train(batch, :, :), lamb);
     G = G + g.^2;
     w = w - lr .* g ./ sqrt(G + eps);

@@ -12,7 +12,7 @@ else
     max_iter = opts.max_iter;
 end
 if ~isfield(opts, 'lamb')
-    lamb = 1.;
+    lamb = 0;
 else
     lamb = opts.lamb;
 end
@@ -38,7 +38,7 @@ for i = 1:max_iter
     tic;
     fprintf('iter: %d/%d\n', i, max_iter);
     s = randsample(1:n_batch, 1);
-    batch = ((s-1)*n_batch+1):s*n_batch;
+    batch = ((s - 1)*batch_size + 1):s*batch_size;
     g = Softgrad(y_train(batch, :, :), w, x_train(batch, :, :), lamb);
     d = d - squeeze(D(s, :, :)) + g;
     D(s, :, :) = g;

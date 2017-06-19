@@ -44,7 +44,7 @@ for i = 1:max_iter
     fprintf('iter: %d/%d\n', i, max_iter);
     w_hat = w + rho .* v;
     s = randsample(1:n_batch, 1);
-    batch = ((s-1)*n_batch+1):s*n_batch;
+    batch = ((s - 1)*batch_size + 1):s*batch_size;
     g = Softgrad(y_train(batch, :, :), w_hat, x_train(batch, :, :), lamb);
     v = rho .* v - lr .* g;
     w = w + v;

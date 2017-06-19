@@ -54,7 +54,7 @@ for i = 1:max_iter
     tic;
     fprintf('iter: %d/%d\n', i, max_iter);
     si = randsample(1:n_batch, 1);
-    batch = ((si-1)*n_batch+1):si*n_batch;
+    batch = ((si - 1)*batch_size + 1):si*batch_size;
     g = Softgrad(y_train(batch, :, :), w, x_train(batch, :, :), lamb);
     s = rho1 * s + (1 - rho1) * g;
     r = rho2 * r + (1 - rho2) * (g.^2);

@@ -2,6 +2,7 @@
 
 target = 'mnist';
 solvers = {'SGD', 'Momentum', 'Nesterov', 'AdaGrad', 'AdaDelta', 'RMSProp', 'Adam', 'Adamax', 'SAG', 'SVRG'};
+solvers = {'SGD', 'SVRG'};
 markers = {'--^', '--s', '--o', '--*', '--^', '--s', '--o', '--*', '--^', '--s', '--o', '--*'};
 curve_point = 20;
 for i = 1:length(solvers)

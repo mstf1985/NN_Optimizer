@@ -4,10 +4,10 @@
 data_path = './data/';
 result_path = './result/';
 target = 'mnist';
-solver = 'NrmsProp';
+solver = 'SVRG';
 opts.lr = 0.01;
-opts.max_iter = 500;
-opts.batch_size = 1000;
+opts.max_iter = 1000;
+opts.batch_size = 100;
 opts.lamb = 0.001;
 
 %% load and shuffle data
@@ -21,7 +21,7 @@ end
 
 %% train and test 
 onehot = @(y) bsxfun(@eq, y(:), 1:max(y));
-n_train = 60000;
+n_train = round(length(data)/opts.batch_size*0.8)*opts.batch_size;
 x_train = data(1:n_train, 1:end-1);
 y_train = data(1:n_train, end)+1;
 y_train = onehot(y_train);
