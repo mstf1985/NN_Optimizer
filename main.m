@@ -4,7 +4,7 @@
 data_path = './data/';
 result_path = './result/';
 target = 'mnist';
-solver = 'AdaGrad';
+solver = 'Nesterov';
 opts.lr = 0.001;
 opts.max_iter = 100000;
 opts.batch_size = 100;

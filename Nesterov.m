@@ -43,7 +43,7 @@ for i = 1:max_iter
     tic;
     w_hat = w + rho .* v;
     s = randsample(1:n_samples, 1);
-    g = Softgrad(y_train(s, :, :), w, x_train(s, :, :), lamb);
+    g = Softgrad(y_train(s, :, :), w_hat, x_train(s, :, :), lamb);
     v = rho .* v - lr .* g;
     w = w + v;
     time = time + toc;
