@@ -4,12 +4,12 @@
 data_path = './data/';
 result_path = './result/';
 target = 'mnist';
-solver = 'Nesterov';
+solver = 'SGD';
 opts.lr = 0.001;
-opts.max_iter = 100000;
+opts.max_iter = 1000000;
 opts.batch_size = 100;
 opts.lamb = 0.001;
-opts.period = 1000;
+opts.period = 5000;
 
 %% load and shuffle data
 rng('default'); % random seed

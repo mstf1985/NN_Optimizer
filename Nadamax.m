@@ -52,7 +52,6 @@ train_time = zeros(n_period, 1);
 time = 0;
 for i = 1:max_iter
     tic;
-    fprintf('iter: %d/%d\n', i, max_iter);
     si = randsample(1:n_samples, 1);
     g = Softgrad(y_train(si, :, :), w, x_train(si, :, :), lamb);
     s = rho1 * s + (1 - rho1) * g;
