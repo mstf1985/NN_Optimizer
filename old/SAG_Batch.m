@@ -1,6 +1,6 @@
 function [train_loss, train_acc, test_loss, test_acc, train_time] ...
-    = AdaGrad(x_train, y_train, x_test, y_test, opts)
-% AdaGrad solver
+    = SAG_Batch(x_train, y_train, x_test, y_test, opts)
+% SAG solver
 if ~isfield(opts, 'lr')
     lr = 1e-2;
 else
@@ -11,15 +11,15 @@ if ~isfield(opts, 'max_iter')
 else
     max_iter = opts.max_iter;
 end
-if ~isfield(opts, 'eps')
-    eps = 1e-8;
-else
-    eps = opts.eps;
-end
 if ~isfield(opts, 'lamb')
     lamb = 0;
 else
     lamb = opts.lamb;
+end
+if ~isfield(opts, 'batch_size')
+    batch_size = 100;
+else
+    batch_size = opts.batch_size;
 end
 if ~isfield(opts, 'period')
     period = 10;
@@ -30,7 +30,8 @@ end
 rng('default'); % random seed
 [n_samples, n_features] = size(x_train);
 [~, n_labels] = size(y_train);
-G = zeros(n_features, n_labels);
+d = zeros(n_features, n_labels);
+D = zeros(n_samples, n_features, n_labels);
 w = randn(n_features, n_labels);
 n_period = round(max_iter / period);
 train_loss = zeros(n_period, 1);
@@ -41,10 +42,12 @@ train_time = zeros(n_period, 1);
 time = 0;
 for i = 1:max_iter
     tic;
-    s = randsample(1:n_samples, 1);
+    fprintf('iter: %d/%d\n', i, max_iter);
+    s = randsample(1:n_samples, batch_size);
     g = Softgrad(y_train(s, :, :), w, x_train(s, :, :), lamb);
-    G = G + g.^2;
-    w = w - lr .* g ./ sqrt(G + eps);
+    d = d - squeeze(D(s, :, :)) + g;
+    D(s, :, :) = g;
+    w = w - lr .* d;
     time = time + toc;
     if mod(i, period) == 0
         fprintf('iter: %d/%d\n', i, max_iter);

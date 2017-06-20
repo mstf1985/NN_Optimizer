@@ -31,45 +31,50 @@ if ~isfield(opts, 'rho2')
 else
     rho2 = opts.rho2;
 end
-if ~isfield(opts, 'batch_size')
-    batch_size = 100;
+if ~isfield(opts, 'period')
+    period = 10;
 else
-    batch_size = opts.batch_size;
+    period = opts.period;
 end
 
 rng('default'); % random seed
 [n_samples, n_features] = size(x_train);
-n_batch = round(n_samples / batch_size);
 [~, n_labels] = size(y_train);
 w = randn(n_features, n_labels);
 r = zeros(n_features, n_labels);
 s = zeros(n_features, n_labels);
-train_loss = zeros(max_iter, 1);
-train_acc = zeros(max_iter, 1);
-test_loss = zeros(max_iter, 1);
-test_acc = zeros(max_iter, 1);
-train_time = zeros(max_iter, 1);
-
+n_period = round(max_iter / period);
+train_loss = zeros(n_period, 1);
+train_acc = zeros(n_period, 1);
+test_loss = zeros(n_period, 1);
+test_acc = zeros(n_period, 1);
+train_time = zeros(n_period, 1);
+time = 0;
 for i = 1:max_iter
     tic;
     fprintf('iter: %d/%d\n', i, max_iter);
-    si = randsample(1:n_batch, 1);
-    batch = ((si - 1)*batch_size + 1):si*batch_size;
-    g = Softgrad(y_train(batch, :, :), w, x_train(batch, :, :), lamb);
+    si = randsample(1:n_samples, 1);
+    g = Softgrad(y_train(si, :, :), w, x_train(si, :, :), lamb);
     s = rho1 * s + (1 - rho1) * g;
     r = max(rho2 * r, abs(g));
     s_hat = s / (1 - rho1^i);
     w = w - lr ./ (r + eps) .* (rho1 * s_hat + (1 - rho1) / (1 - rho1^i) * g);
-    train_time(i) = toc;
-    % train eval
-    [acc, loss, ~] = Softloss(y_train, w, x_train, lamb);
-    train_loss(i) = loss;
-    train_acc(i) = acc;
-    % test eval
-    [acc, loss, ~] = Softloss(y_test, w, x_test, lamb);
-    test_loss(i) = loss;
-    test_acc(i) = acc;
-    fprintf('CPU time: %f, train loss: %f, train_acc: %f, test_loss: %f, test_acc: %f \n', ...
-        train_time(i), train_loss(i), train_acc(i), test_loss(i), test_acc(i));
+    time = time + toc;
+    if mod(i, period) == 0
+        fprintf('iter: %d/%d\n', i, max_iter);
+        t = round(i / period);
+        train_time(t) = time;
+        time = 0;
+        % train eval
+        [acc, loss, ~] = Softloss(y_train, w, x_train, lamb);
+        train_loss(t) = loss;
+        train_acc(t) = acc;
+        % test eval
+        [acc, loss, ~] = Softloss(y_test, w, x_test, lamb);
+        test_loss(t) = loss;
+        test_acc(t) = acc;
+        fprintf('CPU time: %f, train loss: %f, train_acc: %f, test_loss: %f, test_acc: %f \n', ...
+            train_time(t), train_loss(t), train_acc(t), test_loss(t), test_acc(t)); 
+    end
 end
 end

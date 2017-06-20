@@ -2,7 +2,6 @@
 
 target = 'mnist';
 solvers = {'SGD', 'Momentum', 'Nesterov', 'AdaGrad', 'AdaDelta', 'RMSProp', 'Adam', 'Adamax', 'SAG', 'SVRG'};
-solvers = {'SGD', 'SVRG'};
 markers = {'--^', '--s', '--o', '--*', '--^', '--s', '--o', '--*', '--^', '--s', '--o', '--*'};
 curve_point = 20;
 for i = 1:length(solvers)
@@ -13,8 +12,8 @@ for i = 1:length(solvers)
     [max_acc, max_i] = max(test_acc.test_acc);
     disp(['acc: ', num2str(max_acc), '; time: ', num2str(train_time(max_i)), '; TLE: ', num2str(max(train_time))]);
     test_error = 1 - test_acc.test_acc;
-    x = train_time(logical(train_time<=10));
-    y = test_error(logical(train_time<=10));
+    x = train_time(logical(train_time<=40));
+    y = test_error(logical(train_time<=40));
     index = 1:round(length(x)/curve_point):length(x);
     plot(x(index), y(index), markers{i});
     hold on;

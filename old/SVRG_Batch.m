@@ -1,5 +1,5 @@
 function [train_loss, train_acc, test_loss, test_acc, train_time] ...
-    = SVRG(x_train, y_train, x_test, y_test, opts)
+    = SVRG_Batch(x_train, y_train, x_test, y_test, opts)
 % SVRG solver
 if ~isfield(opts, 'lr')
     lr = 1e-3;
@@ -20,6 +20,11 @@ if ~isfield(opts, 'period')
     period = 100;
 else
     period = opts.period;
+end
+if ~isfield(opts, 'batch_size')
+    batch_size = 100;
+else
+    batch_size = opts.batch_size;
 end
 
 rng('default'); % random seed
@@ -46,7 +51,7 @@ while 1
             break
         end
         tic;
-        s = randsample(1:n_samples, 1);
+        s = randsample(1:n_samples, batch_size);
         g_w = Softgrad(y_train(s, :, :), w, x_train(s, :, :), lamb);
         g_w_hat = Softgrad(y_train(s, :, :), w_hat, x_train(s, :, :), lamb);
         w = w - lr .*  (g_w - g_w_hat + g);

@@ -4,11 +4,12 @@
 data_path = './data/';
 result_path = './result/';
 target = 'mnist';
-solver = 'SVRG';
-opts.lr = 0.01;
-opts.max_iter = 1000;
+solver = 'AdaGrad';
+opts.lr = 0.001;
+opts.max_iter = 100000;
 opts.batch_size = 100;
 opts.lamb = 0.001;
+opts.period = 1000;
 
 %% load and shuffle data
 rng('default'); % random seed
