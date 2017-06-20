@@ -15,10 +15,13 @@ for i = 1:length(solvers)
     x = train_time(logical(train_time<=40));
     y = test_error(logical(train_time<=40));
     index = 1:round(length(x)/curve_point):length(x);
-    plot(x(index), y(index), markers{i});
+    % plot(x(index), y(index), markers{i});
+    plot(test_error(index), markers{i});
     hold on;
 end
-set(gca, 'YScale', 'log');
-xlabel('Train Time (s)');
+% set(gca, 'YScale', 'log');
+xlim([1, 20]);
+% xlabel('Train Time (s)');
+xlabel('Iterations');
 ylabel('Test Error');
 legend(solvers);
